@@ -76,7 +76,6 @@
 
     // VALUE FINDER helper function
     valueFinder: function(rowIndex, colIndex) {
-      console.log(`valueFinder: row: ${rowIndex}, col: ${colIndex}, value: ${this.rows()[rowIndex][colIndex]}`)
       return this.rows()[rowIndex][colIndex];
     },
 
@@ -165,19 +164,17 @@
       } else if (diagonalIndex < 0) {
         diagonalPos = [Math.abs(diagonalIndex), 0];
       }
-      console.log(`n: ${this.get('n')}, startPos: ${diagonalPos}`)
       // create diagonal array
       var diagonalArray = [];
       // loop through diagonal values
       while (this._isInBounds(...diagonalPos)) {
-        console.log(`coordinates: ${diagonalPos}, value: ${this.valueFinder(...diagonalPos)}, this: ${JSON.stringify(this)}`)
         // push starting matrix position variable into array
         diagonalArray.push(this.valueFinder(...diagonalPos));
         // increment pos
         diagonalPos[0] ++;
         diagonalPos[1] ++;
       }
-      console.log(diagonalArray)
+
       // invoke conflict checker on new array
       return this.conflictChecker(diagonalArray);
     },
@@ -215,18 +212,14 @@
       } else if (diagonalIndex > shortN) {
         diagonalPos = [diagonalIndex - (shortN), shortN];
       }
-      console.log(`n: ${shortN + 1}, n-1: ${shortN}, startPos: ${diagonalPos}`)
       // while loop through diagonal values from start position (stops when position is out of bounds)
       while (this._isInBounds(...diagonalPos)) {
-
         // push value at each point to array
-        console.log(`coordinates: ${diagonalPos}, value: ${this.valueFinder(...diagonalPos)}, this: ${JSON.stringify(this)}`)
         diagonalArray.push(this.valueFinder(...diagonalPos));
         // increment position (row +, col -)
         diagonalPos[0] ++;
         diagonalPos[1] --;
       }
-      console.log(diagonalArray)
       // invoke conflict checker on array
       return this.conflictChecker(diagonalArray);
     },
@@ -243,6 +236,17 @@
       }
       return false;
     }
+
+    /*
+    Exclusion helpers:
+    - invoked when placing a new piece, nulls out all rows/columns/diagonals threatened by new piece
+      - rewrites them as null value
+    */
+    // ROOK EXCLUSION helper function
+
+
+    // QUEEN EXCLUSION helper function
+
 
     /*--------------------  End of Helper Functions  ---------------------*/
 
