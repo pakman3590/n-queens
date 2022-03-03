@@ -74,6 +74,21 @@
     =                 TODO: fill in these Helper Functions                    =
     =========================================================================*/
 
+
+    // CONFLICT CHECKER helper function
+    conflictChecker: function(arr) {
+      var occupied = false;
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === 1) {
+          if (occupied === true) {
+            return true;
+          }
+          occupied = true;
+        }
+      }
+      return false;
+    },
+
     // ROWS - run from left to right
     // --------------------------------------------------------------
     //
@@ -83,32 +98,16 @@
       // O: boolean - true if more than one value in the row is 1
       // C: bounds of board
       // E:
-
-      // need to access this.rows
-      var row = this.rows()[rowIndex];
-      // declare true/false variable, initialized as false
-      var occupied = false;
-      // iterate through the row
-      for (var i = 0; i < row.length; i++) {
-        // if value of cell is 1,
-        if (row[i] === 1) {
-          // check if truth flag is true
-          if (occupied === true) {
-            // return true
-            return true;
-          }
-          // set truth flag to be true
-          occupied = true;
-        }
-      }
-      return false;
+      return this.conflictChecker(this.rows()[rowIndex]);
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      var rows = this.rows();
-      for (let i = 0; i < rows.length; i++) {
-        if (hasRowConflictAt(rows[i])) {
+      //var row = this.rows();
+      // loop through every row
+      for (let i = 0; i < this.get('n'); i++) {
+        // check if row has conflict
+        if (this.hasRowConflictAt(i)) {
           return true;
         }
       }
@@ -122,22 +121,33 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      // declare occ flag, initialize false
-      let occupied = false;
-      // loop through 'column'
-      for (let i = 0; i < this.rows().length; i++) { // test to see if n works here
-        // if val is 1
-        if (this.rows()[i][colIndex]) {
-          // if occ true
-          if (occupied) {
-            // return true
-            return true;
-          }
-          // set flag true
-          occupied = true;
-        }
+      // make column array
+      let column = [];
+      // loop though rows
+      for (let i = 0; i < this.get('n'); i ++) {
+        // push each value @ column index to column array
+        column.push(this.rows()[i][colIndex]);
       }
-      return false; // fixme
+      // return conflictchecker on array
+      return this.conflictChecker(column);
+
+
+      // // declare occ flag, initialize false
+      // let occupied = false;
+      // // loop through 'column'
+      // for (let i = 0; i < this.rows().length; i++) { // test to see if n works here
+      //   // if val is 1
+      //   if (this.rows()[i][colIndex]) {
+      //     // if occ true
+      //     if (occupied) {
+      //       // return true
+      //       return true;
+      //     }
+      //     // set flag true
+      //     occupied = true;
+      //   }
+      // }
+      // return false;
     },
 
     // test if any columns on this board contain conflicts
@@ -152,7 +162,7 @@
           return true;
         }
       }
-      return false; // fixme
+      return false;
     },
 
 
@@ -160,7 +170,21 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+    hasMajorDiagonalConflictAt: function(diagonalIndex) {
+      // convert diagonal index into starting matrix position, saved as a variable
+      // create diagonal array
+      // loop through diagonal values
+        // push starting matrix position variable into array
+        // increment starting matrix position variable
+        // if newly incremented starting position is not within bounds
+          // break
+      // declare occupied flag, initialized as false
+      // loop through diagonal array
+        // if value is 1
+          // if occupied flag is true
+            // return true
+          // set occupied flag to be true
+
       return false; // fixme
     },
 
@@ -175,7 +199,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+    hasMinorDiagonalConflictAt: function(diagonalIndex) {
       return false; // fixme
     },
 
