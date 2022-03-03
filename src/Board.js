@@ -74,6 +74,11 @@
     =                 TODO: fill in these Helper Functions                    =
     =========================================================================*/
 
+    // VALUE FINDER helper function
+    valueFinder: function(rowIndex, colIndex) {
+      console.log(`valueFinder: row: ${rowIndex}, col: ${colIndex}, value: ${this.rows()[rowIndex][colIndex]}`)
+      return this.rows()[rowIndex][colIndex];
+    },
 
     // CONFLICT CHECKER helper function
     conflictChecker: function(arr) {
@@ -130,24 +135,6 @@
       }
       // return conflictchecker on array
       return this.conflictChecker(column);
-
-
-      // // declare occ flag, initialize false
-      // let occupied = false;
-      // // loop through 'column'
-      // for (let i = 0; i < this.rows().length; i++) { // test to see if n works here
-      //   // if val is 1
-      //   if (this.rows()[i][colIndex]) {
-      //     // if occ true
-      //     if (occupied) {
-      //       // return true
-      //       return true;
-      //     }
-      //     // set flag true
-      //     occupied = true;
-      //   }
-      // }
-      // return false;
     },
 
     // test if any columns on this board contain conflicts
@@ -172,25 +159,42 @@
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(diagonalIndex) {
       // convert diagonal index into starting matrix position, saved as a variable
+      var diagonalPos = [0, 0];
+      if (diagonalIndex > 0) {
+        diagonalPos = [0, diagonalIndex];
+      } else if (diagonalIndex < 0) {
+        diagonalPos = [Math.abs(diagonalIndex), 0];
+      }
+      console.log(`n: ${this.get('n')}, startPos: ${diagonalPos}`)
       // create diagonal array
+      var diagonalArray = [];
       // loop through diagonal values
+      while (this._isInBounds(...diagonalPos)) {
+        console.log(`coordinates: ${diagonalPos}, value: ${this.valueFinder(...diagonalPos)}, this: ${JSON.stringify(this)}`)
         // push starting matrix position variable into array
-        // increment starting matrix position variable
-        // if newly incremented starting position is not within bounds
-          // break
-      // declare occupied flag, initialized as false
-      // loop through diagonal array
-        // if value is 1
-          // if occupied flag is true
-            // return true
-          // set occupied flag to be true
-
-      return false; // fixme
+        diagonalArray.push(this.valueFinder(...diagonalPos));
+        // increment pos
+        diagonalPos[0] ++;
+        diagonalPos[1] ++;
+      }
+      console.log(diagonalArray)
+      // invoke conflict checker on new array
+      return this.conflictChecker(diagonalArray);
     },
 
     // test if any major diagonals on this board contain conflicts
+    // I: none
+    // O: boolean - true if any hasMajorDiagonalConflicts is true
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      // iterate through all diagonal indicies (from -n + 1 to n - 1)
+      for (let i = -(this.get('n') - 1); i < this.get('n'); i ++) {
+        // if hasMajDiag with values is true
+        if (this.hasMajorDiagonalConflictAt(i)) {
+          // return true
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -200,12 +204,44 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(diagonalIndex) {
-      return false; // fixme
+      // n - 1 variable
+      let shortN = this.get('n') - 1;
+      // convert diagonal index into starting matrix position, saved as a variable
+      var diagonalPos = [0, shortN];
+      // declare diagonal array
+      let diagonalArray = [];
+      if (diagonalIndex < shortN) {
+        diagonalPos = [0, diagonalIndex];
+      } else if (diagonalIndex > shortN) {
+        diagonalPos = [diagonalIndex - (shortN), shortN];
+      }
+      console.log(`n: ${shortN + 1}, n-1: ${shortN}, startPos: ${diagonalPos}`)
+      // while loop through diagonal values from start position (stops when position is out of bounds)
+      while (this._isInBounds(...diagonalPos)) {
+
+        // push value at each point to array
+        console.log(`coordinates: ${diagonalPos}, value: ${this.valueFinder(...diagonalPos)}, this: ${JSON.stringify(this)}`)
+        diagonalArray.push(this.valueFinder(...diagonalPos));
+        // increment position (row +, col -)
+        diagonalPos[0] ++;
+        diagonalPos[1] --;
+      }
+      console.log(diagonalArray)
+      // invoke conflict checker on array
+      return this.conflictChecker(diagonalArray);
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      // iterate through all minor diag indicies (from 0 to n + 1)
+      for (let i = 0; i < this.get('n') + 1; i ++) {
+        // check to see diag has conflict
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          // return true
+          return true;
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -224,4 +260,8 @@
 }());
 
 
-var myBoard = new Board([[1, 0, 1], [1, 0, 0], [0, 0, 0]]);
+var myBoard = new Board([
+  [0, 0, 1, 0],
+  [0, 0, 0, 0],
+  [1, 0, 0, 0],
+  [0, 0, 0, 0]]);
