@@ -28,7 +28,7 @@
       this.get(rowIndex)[colIndex] = + !this.get(rowIndex)[colIndex];
       this.trigger('change');
     },
-
+    // generates unique label for all in diagonal
     _getFirstRowColumnIndexForMajorDiagonalOn: function(rowIndex, colIndex) {
       return colIndex - rowIndex;
     },
@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -79,12 +79,40 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      // I: row index
+      // O: boolean - true if more than one value in the row is 1
+      // C: bounds of board
+      // E:
+
+      // need to access this.rows
+      var row = this.rows()[rowIndex];
+      // declare true/false variable, initialized as false
+      var occupied = false;
+      // iterate through the row
+      for (var i = 0; i < row.length; i++) {
+        // if value of cell is 1,
+        if (row[i] === 1) {
+          // check if truth flag is true
+          if (occupied === true) {
+            // return true
+            return true;
+          }
+          // set truth flag to be true
+          occupied = true;
+        }
+      }
+      return false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+      for (let i = 0; i < rows.length; i++) {
+        if (hasRowConflictAt(rows[i])) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -94,14 +122,38 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
+      // declare occ flag, initialize false
+      let occupied = false;
+      // loop through 'column'
+      for (let i = 0; i < this.rows().length; i++) { // test to see if n works here
+        // if val is 1
+        if (this.rows()[i][colIndex]) {
+          // if occ true
+          if (occupied) {
+            // return true
+            return true;
+          }
+          // set flag true
+          occupied = true;
+        }
+      }
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
+    // iterate over 'columns' and invoke hascolconflictat on each
+    // returns true if any are true, otherwise return false
     hasAnyColConflicts: function() {
+      // for loop though col indicies
+      for (let i = 0; i < this.get('n'); i ++) {
+        // check if hascolconflictat is true
+        if (this.hasColConflictAt(i)) {
+          // return true
+          return true;
+        }
+      }
       return false; // fixme
     },
-
 
 
     // Major Diagonals - go from top-left to bottom-right
@@ -146,3 +198,6 @@
   };
 
 }());
+
+
+var myBoard = new Board([[1, 0, 1], [1, 0, 0], [0, 0, 0]]);
