@@ -118,8 +118,6 @@
       return false;
     },
 
-
-
     // COLUMNS - run from top to bottom
     // --------------------------------------------------------------
     //
@@ -235,17 +233,78 @@
         }
       }
       return false;
-    }
+    },
 
     /*
     Exclusion helpers:
     - invoked when placing a new piece, nulls out all rows/columns/diagonals threatened by new piece
       - rewrites them as null value
+
     */
     // ROOK EXCLUSION helper function
-
+    // I: new piece position (rowI, colI), current board
+    // O: mutates input board OR returns updated board
+    // C: should NOT overwrite 1 or null values
+    rookExclusion: function(currentBoard, rowI, colI) {
+      // iterate through newPiece's row
+      for (let i = 0; i < this.get('n'); i++) {
+        // null out any 0 values
+        if (currentBoard.rows()[rowI][i] === 0) {
+          currentBoard.rows()[rowI][i] = null;
+        }
+      }
+      // iterate through newPiece's column
+      for (let i = 0; i < this.get('n'); i++) {
+        // null out any 0 values
+        if (currentBoard.rows()[i][colI] === 0) {
+          currentBoard.rows()[i][colI] = null;
+        }
+      }
+    },
 
     // QUEEN EXCLUSION helper function
+    queenExclusion: function(currentBoard, rowI, colI) {
+      var diagonalArray = [];
+      var majorDiagIndex = this._getFirstRowColumnIndexForMajorDiagonalOn(rowI, colI);
+      let diagonalPos = [0, 0];
+      if (majorDiagIndex > 0) {
+        diagonalPos = [0, majorDiagIndex];
+      } else if (majorDiagIndex < 0) {
+        diagonalPos = [Math.abs(majorDiagIndex), 0];
+      }
+      // loop through diagonal values
+      while (this._isInBounds(...diagonalPos)) {
+        // push starting matrix position variable into array
+        diagonalArray.push([this.valueFinder(...diagonalPos), diagonalPos[0], diagonalPos[1]]);
+        // increment pos
+        diagonalPos[0] ++;
+        diagonalPos[1] ++;
+      }
+      var minorDiagIndex = this._getFirstRowColumnIndexForMinorDiagonalOn(rowI, colI);
+      let shortN = this.get('n') - 1;
+      diagonalPos = [0, shortN];
+      // declare diagonal array
+      if (minorDiagIndex < shortN) {
+        diagonalPos = [0, minorDiagIndex];
+      } else if (minorDiagIndex > shortN) {
+        diagonalPos = [minorDiagIndex - (shortN), shortN];
+      }
+      // while loop through diagonal values from start position (stops when position is out of bounds)
+      while (this._isInBounds(...diagonalPos)) {
+        // push value at each point to array
+        diagonalArray.push([this.valueFinder(...diagonalPos), diagonalPos[0], diagonalPos[1]]);
+        // increment position (row +, col -)
+        diagonalPos[0] ++;
+        diagonalPos[1] --;
+      }
+      console.log(diagonalArray)
+      for (var i = 0; i < diagonalArray.length; i++) {
+        if (diagonalArray[i][0] === 0) {
+          console.log(currentBoard.rows()[diagonalArray[i][1]][diagonalArray[i][2]]);
+          currentBoard.rows()[diagonalArray[i][1]][diagonalArray[i][2]] = null;
+        }
+      }
+    }
 
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -265,7 +324,7 @@
 
 
 var myBoard = new Board([
-  [0, 0, 1, 0],
   [0, 0, 0, 0],
-  [1, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
   [0, 0, 0, 0]]);

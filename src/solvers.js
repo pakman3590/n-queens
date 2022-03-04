@@ -17,6 +17,45 @@
 
 window.findNRooksSolution = function(n) {
   var solution = undefined; //fixme
+  // create new n x n board
+  let board = new Board({ n: n });
+
+  // new recursive
+  let addRook = function (board, currN) {
+    // make copy of board
+    let newBoard = new Board(board.rows());
+    // loop through matrix
+    for (let i = 0; i < newBoard.get(('n')); i ++) {
+      for (let j = 0; j < newBoard.get('n'); j ++) {
+        // check if solution solved
+        if (solution) {
+          break;
+        }
+        // check if occupied
+        if (newBoard.rows()[i][j] === 0) {
+          // place new piece
+          newBoard.rows()[i][j] = 1;
+          // rook exclusion
+          newBoard.rookExclusion(newBoard, i, j);
+          // (base case) if # rooks equals input n
+          if (currN === n) {
+            // assign current board to solution
+            solution = newBoard.rows();
+            // return
+            return;
+          }
+          // (recursive case)
+          // invoke recursion with current board and n + 1
+          addRook(newBoard, currN + 1);
+        }
+      }
+    }
+
+  };
+
+  // begin recursion
+  addRook(board, 1);
+
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
