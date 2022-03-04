@@ -18,8 +18,10 @@
 window.findNRooksSolution = function(n) {
   var solution = undefined; //fixme
   // create new n x n board
-  let board = new Board({ n: n });
-
+  let brd = new Board({ n: n });
+  console.log((new Board({n: n})).rows());
+  console.log(brd.rows());
+  debugger;
   // new recursive
   let addRook = function (board, currN) {
     // make copy of board
@@ -52,9 +54,8 @@ window.findNRooksSolution = function(n) {
     }
 
   };
-
-  // begin recursion
-  addRook(board, 1);
+  // // begin recursion
+  addRook(brd, 1);
 
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
@@ -63,8 +64,65 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
 
+  // create new n x n board
+  var potato = new Board({n: n});
+  console.log(new Board({n: n}));
+  console.log(potato);
+  debugger;
+  // new recursive
+  let addRook = function (potato, currN) {
+    // loop through matrix
+    for (let i = 0; i < potato.get(('n')); i ++) {
+      for (let j = 0; j < potato.get('n'); j ++) {
+        //console.log(`[${i}, ${j}], currN: ${currN}, solnCt: ${solutionCount}`)
+        // make copy of board
+        let newBoard = potato.rows().slice();
+        //console.log(newBoard.rows())
+        // check if occupied
+        if (newBoard[i][j] === 0) {
+          // place new piece
+          newBoard[i][j] = 1;
+          // rook exclusion
+          newBoard = new Board(newBoard);
+          newBoard.rookExclusion(newBoard, i, j);
+          // (base case) if # rooks equals input n
+          if (currN === n) {
+            // assign current board to solution
+            solutionCount ++;
+            // return
+            return;
+
+
+            // // make copy of board
+            // let newBoard = new Board(potato.rows());
+            // //console.log(newBoard.rows())
+            // // check if occupied
+            // if (newBoard.rows()[i][j] === 0) {
+            //   // place new piece
+            //   newBoard.rows()[i][j] = 1;
+            //   // rook exclusion
+            //   newBoard.rookExclusion(newBoard, i, j);
+            //   // (base case) if # rooks equals input n
+            //   if (currN === n) {
+            //     // assign current board to solution
+            //     solutionCount ++;
+            //     // return
+            //     return;
+
+          }
+          // (recursive case)
+          // invoke recursion with current board and n + 1
+          addRook(newBoard, currN + 1);
+        }
+      }
+    }
+
+  };
+
+  // begin recursion
+  addRook(potato, 1);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
